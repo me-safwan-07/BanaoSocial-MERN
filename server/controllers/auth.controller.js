@@ -2,6 +2,7 @@ import bcrypt from "bcryptjs";
 import User from "../models/user.model.js";
 import { validationResult } from "express-validator";
 import jwt from "jsonwebtoken";
+
 /** 
  * @route POST /api/auth/signup
 */
@@ -28,8 +29,11 @@ export const signUp = async (req, res) => {
         user = new User({ name, email, password: hashedPassword });
         await user.save();
 
-        res.status(201).json({ success: true, message: "User registered successfully" });
+        const token = jwt.sign({ email: user.email }, process.env.JWT_SECRET, { expiresIn: "1d" });
+
+        res.status(200).json({ success: true, message: "User registered successfully", token });
     } catch (error) {
+        console.log(error);
         res.status(500).json({ message: error.message });
     }
 };
@@ -60,12 +64,17 @@ export const signIn = async (req, res) => {
             return res.status(400).json({ message: "Invalid credentials" });
         }
 
-        res.status(200).json({ success: true, message: "User signed in successfully" });
+        const token = jwt.sign({ email: user.email }, process.env.JWT_SECRET, { expiresIn: "15m" });
+        
+        res.status(200).json({ success: true, message: "User signed in successfully", token });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
 };
 
+/** 
+ * @route POST /api/auth/forgot-password
+*/
 export const forgotPassword = async (req, res) => {
     try {
         const { email } = req.body;
@@ -94,6 +103,9 @@ export const forgotPassword = async (req, res) => {
     }
 };
 
+/** 
+ * @route POST /api/auth/reset-password
+*/
 export const resetPassword = async (req, res) => {
     try {
         const { token, newPassword } = req.body;
