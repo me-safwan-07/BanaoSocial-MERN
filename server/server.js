@@ -4,8 +4,8 @@ import connectDB from "./config/database.js";
 import passport from "passport"; 
 import helmet from "helmet"
 import morgan from "morgan"
-import authRoutes from "./routes/auth.routes.js";
-import postRoutes from "./routes/post.routes.js";	
+import router from "./routes/index.js";
+import './config/passportJwt.js';
 
 const app = express();
 
@@ -15,9 +15,9 @@ app.use(cors({ origin: ["http://localhost:5173"], credentials: true }));
 app.use(passport.initialize());
 app.use(helmet());
 app.use(morgan("combined")); // Logging
+
 // Routes
-app.use("/api/auth", authRoutes);
-app.use("/api/post", postRoutes);
+app.use("/", router)
 app.get("/", (req, res) => {
   res.send("Hello World!");
 });

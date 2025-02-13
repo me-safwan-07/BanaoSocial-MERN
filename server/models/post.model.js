@@ -1,55 +1,53 @@
 import mongoose from "mongoose";
+import Comment from "./comment.model.js";
+import Interaction from "./iteraction.model.js";
 
 const postSchema = new mongoose.Schema({
     title: {
         type: String,
         required: true,
-        minlength: 5,
-        maxlength: 100,
-        trim: true,
+        trim: true
     },
     content: {
         type: String,
         required: true,
-        minlength: 10,
-        maxlength: 5000,
-        trim: true,
+        trim: true
     },
     tags: [
         {
             type: String,
-            required: true,
-            minlength: 3,
-            maxlength: 20,
-            trim: true,
-            validate: {
-                validator: (value) => /^[a-zA-Z0-9, ]*$/.test(value),
-                message: "Tags should only contain alphanumeric characters and commas."
-            }
+            trim: true
         }
     ],
     owner: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "User",
         required: true,
+        ref: "User"
     },
     likes: {
         type: Number,
-        default: 0,
+        default: 0
     },
-    views: {
+    dislikes: {
         type: Number,
-        default: 0,
+        default: 0
     },
     comments: [
         {
             type: mongoose.Schema.Types.ObjectId,
-            ref: "Comment",
+            ref: "Comment"
         }
     ],
+    interactions: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Interaction"
+        }
+    ]
 }, {
-    timestamps: true,
+    timestamps: true
 });
+
 
 const Post = mongoose.model("Post", postSchema);
 

@@ -1,25 +1,25 @@
-const commentSchema = new moongoose.Schema({
+import mongoose from "mongoose";
+
+const commentSchema = new mongoose.Schema({
     content: {
         type: String,
         required: true,
-        minlength: 10,
-        maxlength: 1000,
         trim: true
     },
     owner: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
-        required: true
+        required: true,
+        ref: "User"
     },
     post: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Post',
-        required: true
+        required: true,
+        ref: "Post"
     }
 }, {
-    timestamps: true,
+    timestamps: true
 });
 
-const Comment = mongoose.model('Comment', commentSchema);
+const Comment = mongoose.model("Comment", commentSchema);
 
 export default Comment;
