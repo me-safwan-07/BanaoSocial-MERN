@@ -1,11 +1,11 @@
 import React, { useRef, useState } from 'react'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { Controller, FormProvider, useForm } from 'react-hook-form';
+import { GoogleOAuthProvider } from '@react-oauth/google';
+import { saveTokenToLocalStorage, signupUser } from '@/utils/authAPI';
 import { PasswordInput } from '@/components/ui/PasswordInput';
 import Button from '@/components/ui/Button';
 import { GoogleButton } from '@/components/GoogleButton';
-// import { signup } from '@/hooks/authHooks';
-// import { GoogleOAuthProvider } from '@react-oauth/google';
 
 interface TSignUpFormState {
     name: string;
@@ -14,8 +14,6 @@ interface TSignUpFormState {
 }
 
 function SignupOptions() {
-    const nameRef = useRef<HTMLInputElement>(null);
-    const formRef = useRef<HTMLFormElement>(null);
     const [searchParams] = useSearchParams();
     const navigate = useNavigate();
     const formMethods = useForm<TSignUpFormState>();
@@ -27,17 +25,17 @@ function SignupOptions() {
     const onSubmit = async (data: TSignUpFormState) => {
         setSigningUp(true);
 
-        // try {
-        //     const token = await signup(data);
-        //     if (token) {
-        //         localStorage.setItem("token", token);
-        //         navigate("/");
-        //     }
-        // } catch (error) {
-        //     console.error(error);
-        // } finally {
-        //     setSigningUp(false);
-        // }
+        try {
+            const token = await signupUser(data);
+            if (token) {
+                saveTokenToLocalStorage(token);
+                navigate("/");
+            }
+        } catch (error) {
+            console.error(error);
+        } finally {
+            setSigningUp(false);
+        }
     }
 
   return (
@@ -55,7 +53,7 @@ function SignupOptions() {
                                 placeholder='Full Name' 
                                 aria-placeholder='Full Name'
                                 required
-                                className='focus:border-brand focus:ring-brand block w-full rounded-md border-slate-300 shadow-sm p-2 sm:text-sm'
+                                className="flex h-10 w-full rounded-md border border-slate-300 bg-transparent px-3 py-2 text-sm text-slate-800 placeholder:text-slate-400 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50"
                                 {...formMethods.register("name", {
                                     required: true,
                                     pattern: /^[a-zA-Z]+$/,
@@ -74,7 +72,7 @@ function SignupOptions() {
                                 required
                                 placeholder='example@gmail.com'
                                 defaultValue={searchParams.get('email') || ''}
-                                className='focus:border-brand focus:ring-brand block w-full rounded-md border-slate-300 shadow-sm p-2 sm:text-sm'
+                                className="flex h-10 w-full rounded-md border border-slate-300 bg-transparent px-3 py-2 text-sm text-slate-800 placeholder:text-slate-400 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50"
                                 {...formMethods.register("email", {
                                     required: true,
                                     pattern: /\S+@\S+\.\S+/,

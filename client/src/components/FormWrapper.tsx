@@ -6,6 +6,7 @@ export const FormWrapper = ({ children }: { children: React.ReactNode }) => {
       <div className="mx-auto w-full max-w-sm rounded-xl bg-white p-8 shadow-xl lg:w-96">
         <div className="mb-8 text-center">
           {/* <Logo className="mx-auto w-3/4" /> */}
+          <img src="/logo.png" alt="" className="mx-auto w-3/4"/>
         </div>
         {children}
       </div>

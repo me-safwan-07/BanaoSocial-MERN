@@ -51,7 +51,7 @@ export const SigninForm = () => {
           <h1 className="mb-4 text-slate-700">{fromLabel}</h1>
           <div className="space-y-2">
             <form onSubmit={formMethods.handleSubmit(onSubmit)}>
-              {showLogin && (
+              {/* {showLogin && ( */}
                 <div>
                 <div className="mb-2 transition-all duration-500 ease-in-out">
                 <label htmlFor="email" className='sr-only'>Email</label>
@@ -62,7 +62,7 @@ export const SigninForm = () => {
                   required
                   placeholder="example@email.com"
                   defaultValue={searchParams?.get("email") || ""}
-                  className="p-2 focus:border-blue-300 focus:ring-brand block w-full rounded-md border-slate-300 shadow-sm sm:text-sm"
+                  className="flex h-10 w-full rounded-md border border-slate-300 bg-transparent px-3 py-2 text-sm text-slate-800 placeholder:text-slate-400 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50"
                   {...formMethods.register("email", {
                     required: true,
                     pattern: /\S+@\S+\.\S+/,
@@ -102,7 +102,7 @@ export const SigninForm = () => {
                 </div>
               )}
               </div>
-            )}
+            {/* )} */}
 
               <Button
                 onClick={() => {
@@ -114,7 +114,7 @@ export const SigninForm = () => {
                     }
                   }}
                   variant='darkCTA'
-                  className='w-full justify-center'
+                  className="w-full justify-center bg-black text-white my-3"
                   loading={loggingIn}
                 >
                   Login with Email

@@ -1,4 +1,5 @@
 import Button from '@/components/ui/Button';
+import { Link } from 'react-router-dom';
 
 const Home = () => {
   return (
@@ -6,9 +7,10 @@ const Home = () => {
       {/* Navigation */}
       <header className="border-b">
         <nav className="container mx-auto px-4 h-16 flex items-center justify-between">
-          <a href="/" className="text-2xl font-serif">
-            Medium
-          </a>
+        <a href="/" className="w-auto w-md">
+          <img src="/logo.png" alt="" className="w-1/2 md:w-1/4 lg:w-3/6" />
+        </a>
+
 
           <div className='flex space-x-4'>
             <div className="hidden md:flex items-center space-x-6">
@@ -22,11 +24,13 @@ const Home = () => {
             <a href="#" className="text-sm text-muted-foreground hover:text-foreground">
               Write
             </a>
-            <a href="#" className="text-sm text-muted-foreground hover:text-foreground">
+            <a href="/auth/login" className="text-sm text-muted-foreground hover:text-foreground">
               Sign in
             </a>
             </div>
-            <Button>Get started</Button>
+            <Link to={"/auth/signup"}>
+              <Button>Get started</Button>
+            </Link>
           </div>
         </nav>
       </header>
