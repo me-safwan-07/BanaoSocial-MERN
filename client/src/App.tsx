@@ -1,14 +1,17 @@
-
-import { Button } from "./components/ui/button"
-import { Progress } from "./components/ui/progress"
+import { Route, Routes } from "react-router-dom"
+import Home from "./pages/Home"
+import AuthPage from "./pages/authPage"
 
 
 const App = () => {
   return (
-    <div className="p-5 space-y-2 bg-gray-100">
-      <Button>Click me</Button>
-      <Progress value={33} />
-    </div>
+    <>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/auth/*" element={<AuthPage />} />
+        {/* Add more routes as needed */}
+      </Routes>
+    </>
   )
 }
 
