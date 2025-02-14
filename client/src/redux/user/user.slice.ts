@@ -56,6 +56,7 @@ export const signUp = createAsyncThunk(
             if (!response.ok) {
                 return rejectWithValue(result);
             }
+            console.log(result)
 
             return result;
         } catch (error) {
@@ -108,16 +109,39 @@ const userSlice = createSlice({
         setJwtToken: (state, action) => {
             state.jwtToken = action.payload;
         },
+        // Add a reset action to clear user and token from state and localStorage
+        resetUser: (state) => {
+            state.userInfo = { _id: "", email: "", name: "" };
+            state.jwtToken = "";
+            localStorage.removeItem('userInfo');
+            localStorage.removeItem('jwtToken');
+        }
     },
     extraReducers: (builder) => {
-        builder.addCase(signIn.fulfilled, (state, action) => {
-            console.log(action.payload);
-            state.userInfo = action.payload.data.user;
-            state.jwtToken = action.payload.data.token;
-        });    
-    },
+        builder
+            .addCase(signIn.fulfilled, (state, action) => {
+                // Storing the user info and jwt token in state and localStorage
+                const userData = action.payload.data;
+                state.userInfo = userData.user;
+                state.jwtToken = userData.token;
+                
+                // Persisting to localStorage
+                localStorage.setItem('userInfo', JSON.stringify(userData.user));
+                localStorage.setItem('jwtToken', userData.token);
+            })
+            .addCase(signUp.fulfilled, (state, action) => {
+                // Storing the user info and jwt token in state and localStorage
+                const userData = action.payload.data;
+                state.userInfo = userData.user;
+                state.jwtToken = userData.token;
+
+                // Persisting to localStorage
+                localStorage.setItem('userInfo', JSON.stringify(userData.user));
+                localStorage.setItem('jwtToken', userData.token);
+            });
+    }
 });
 
-export const { setUserInfo, setJwtToken } = userSlice.actions;
+export const { setUserInfo, setJwtToken, resetUser } = userSlice.actions;
 
 export default userSlice.reducer;

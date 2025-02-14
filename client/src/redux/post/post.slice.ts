@@ -5,7 +5,7 @@ export const createPost = createAsyncThunk(
     "post/createPost",
     async (data: { token: string; formData: any }, { rejectWithValue }) => {
         try {
-            const response = await fetch(`${import.meta.env.VITE_SERVER_URI}/api/post/`,
+            const response = await fetch(`${import.meta.env.VITE_SERVER_URI}/post/`,
                 {
                     method: "POST",
                     headers: {
@@ -32,7 +32,7 @@ export const updatePost = createAsyncThunk(
     "post/updatePost",
     async (data: { token: string; postId: string; formData: any }, { rejectWithValue }) => {
         try {
-            const response = await fetch(`${import.meta.env.VITE_SERVER_URI}/api/post/${data.postId}`, {
+            const response = await fetch(`${import.meta.env.VITE_SERVER_URI}/post/${data.postId}`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
@@ -56,7 +56,7 @@ export const deletePost = createAsyncThunk(
     "post/deletePost",
     async (data: { postId: string, jwtToken: string }, { rejectWithValue }) => {
         try {
-            const response = await fetch(`${import.meta.env.VITE_SERVER_URI}/api/post/${data.postId}`, {
+            const response = await fetch(`${import.meta.env.VITE_SERVER_URI}/post/${data.postId}`, {
                 method: "DELETE",
                 headers: {
                     Authorization: `Bearer ${data.jwtToken}`,
@@ -77,9 +77,9 @@ export const deletePost = createAsyncThunk(
 
 export const fetchPosts = createAsyncThunk(
     "post/fetchPosts",
-    async (token, { rejectWithValue }) => {
+    async (token: string, { rejectWithValue }) => {
         try {
-            const response = await fetch(`${import.meta.env.VITE_SERVER_URI}/api/post/`, {
+            const response = await fetch(`${import.meta.env.VITE_SERVER_URI}/post/`, {
                 method: "GET",
                 headers: {
                     Authorization: `Bearer ${token}`,
@@ -107,7 +107,7 @@ export const createComment = createAsyncThunk(
     "post/createComment",
     async (data: CommentData, { rejectWithValue }) => {
         try {
-            const response = await fetch(`${import.meta.env.VITE_SERVER_URI}/api/post/comment/${data.postId}`, {
+            const response = await fetch(`${import.meta.env.VITE_SERVER_URI}/post/comment/${data.postId}`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -137,7 +137,7 @@ export const createInteraction = createAsyncThunk(
     "post/createInteraction",
     async (data: InteractionData, { rejectWithValue }) => {
         try {
-            const response = await fetch(`${import.meta.env.VITE_SERVER_URI}/api/post/interaction/${data.postId}`, {
+            const response = await fetch(`${import.meta.env.VITE_SERVER_URI}/post/interaction/${data.postId}`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

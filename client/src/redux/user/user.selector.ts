@@ -10,7 +10,14 @@ interface UserState {
 }
 
 interface UserInfo {
-    // Define the properties of userInfo here
+    _id: string;
+    name: string;
+    email: string;
+    password: string;
+    posts: string[];
+    tags: string[];
+    __v: number;
+    jwtToken: string;
 }
 
 const selectUser = (state: RootState): UserState => state.user;

@@ -25,9 +25,11 @@ function SignupOptions() {
 
     // Handle form submission
     const onSubmit = async (data: TSignUpFormState) => {
+        // Set signing up loading state
         setSigningUp(true);
-        // Check if passwords match
+        
         if (data.password === data.confirmPassword) {
+            // Proceed with the sign-up dispatch
             dispatch(signUp(data))
                 .unwrap()
                 .then(() => {
@@ -35,25 +37,37 @@ function SignupOptions() {
                         message: "Success 🎉",
                         description: "Signed up successfully",
                     });
+
+                    // Navigate to the sign-in page after successful sign-up
                     navigate("/");
+
+                    // Reset form after successful submission
+                    formMethods.reset();
                 })
-                .catch((error: { message: string }) => {
+                .catch((error) => {
+                    // Handle any error during sign-up
                     toast({
                         variant: "destructive",
                         message: "Error ⚠️",
                         description: error.message,
                     });
-                    console.log(error);
+                    console.log(error); // Log the error for debugging
+                })
+                .finally(() => {
+                    // Set signing up loading state to false after operation
+                    setSigningUp(false);
                 });
         } else {
+            // Handle password mismatch case
             toast({
                 variant: "destructive",
                 message: "Error",
-                description: "Password and confirm password should match",
+                description: "Password and confirm password must match.",
             });
+            setSigningUp(false);  // Set signing up loading state to false
         }
-        setSigningUp(false);
     };
+    
 
     return (
         <div>
@@ -99,7 +113,6 @@ function SignupOptions() {
                                         id="password"
                                         autoComplete="current-password"
                                         placeholder="********"
-                                        // onFocus={() => setIsPasswordFocused(true)}
                                         required
                                         className=""
                                         {...field}
@@ -119,7 +132,6 @@ function SignupOptions() {
                                         id="confirmPassword"
                                         autoComplete="current-password"
                                         placeholder="********"
-                                        // onFocus={() => setIsPasswordFocused(true)}
                                         required
                                         className=""
                                         {...field}
