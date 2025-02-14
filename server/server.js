@@ -6,13 +6,14 @@ import helmet from "helmet"
 import morgan from "morgan"
 import router from "./routes/index.js";
 import './config/passportJwt.js';
+import errorHandler from "./middleware/errorHandler.js";
 
 const app = express();
 
 // Middleware
 app.use(express.json());
-// app.use(cors({ origin: ["http://localhost:5173"], credentials: true }));
-app.use(cors());
+app.use(errorHandler)
+app.use(cors({ origin: ['http://localhost:5173', 'https://your-production-domain.com'] }));
 app.use(passport.initialize());
 app.use(helmet());
 app.use(morgan("combined")); // Logging

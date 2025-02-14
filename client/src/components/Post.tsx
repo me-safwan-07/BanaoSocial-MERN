@@ -1,49 +1,68 @@
+/* eslint-disable react/prop-types */
 import { FaRegTrashCan } from "react-icons/fa6";
-import { FiEdit, FiUser } from "react-icons/fi";
+import { FiEdit } from "react-icons/fi";
 import { FaRegShareFromSquare } from "react-icons/fa6";
 import { MdReportGmailerrorred } from "react-icons/md";
 import { IoBookmarkOutline } from "react-icons/io5";
+import { FiUser } from "react-icons/fi";
 import { BsThreeDots } from "react-icons/bs";
-import { AiOutlineLike, AiOutlineDislike, AiFillLike, AiFillDislike } from "react-icons/ai";
+import { AiOutlineLike } from "react-icons/ai";
+import { AiOutlineDislike } from "react-icons/ai";
 import { GoCommentDiscussion } from "react-icons/go";
-import { useEffect, useState, FormEvent } from "react";
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { AiFillDislike } from "react-icons/ai";
+import { AiFillLike } from "react-icons/ai";
+import { useEffect, useState } from "react";
+import {
+    Card,
+    CardContent,
+    // CardDescription,
+    CardFooter,
+    CardHeader,
+    CardTitle,
+} from "@/components/ui/card";
 import { useDispatch, useSelector } from "react-redux";
-import { createLocalComment, createComment, createInteraction, deletePost } from "@/redux/post/post.slice";
-import { selectUserInfo, selectUserToken } from "@/redux/user/user.selector";
+import { createLocalComment, createComment } from "@/redux/post/post.slice";
 import { AppDispatch } from "@/redux/store";
-import { Menubar, MenubarContent, MenubarItem, MenubarMenu, MenubarSeparator, MenubarTrigger } from "@/components/ui/menubar";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import PostForm from "./PostForm";
-import { Input } from "./ui/input";
+import { selectUserInfo, selectUserToken } from "@/redux/user/user.selector";
+import { createInteraction } from "@/redux/post/post.slice";
+import {
+    Menubar,
+    MenubarContent,
+    MenubarItem,
+    MenubarMenu,
+    MenubarSeparator,
+    // MenubarShortcut,
+    MenubarTrigger,
+} from "@/components/ui/menubar";
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogHeader,
+    // DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+} from "@/components/ui/dialog";
+import { deletePost } from "@/redux/post/post.slice";
 import Button from "./ui/Button";
-
-interface CommentOwner {
-    name: string;
-    _id: string;
-}
+import PostForm from "./PostForm";
 
 interface Comment {
-    owner: CommentOwner;
+    owner: {
+        name: string;
+    };
     content: string;
 }
 
-interface PostProps {
-    post: {
-        _id: string;
-        owner: CommentOwner;
-        title: string;
-        content: string;
-        likes: number;
-        dislikes: number;
-        comments: Comment[];
-        interactions: { owner: string; type: "like" | "dislike" }[];
-        tags: string[];
-    };
-    [key: string]: any; // For other props
-}
+// interface PostComments {
+//     comments: Comment[];
+// }
 
-const Post = ({ post, ...otherProps }: PostProps) => {
+interface PostInteractions {
+    post: any;
+    otherPorpse: any;
+}
+const Post = ({ post, ...otherPorps }: PostInteractions) => {
     const [postDelete, setPostDeleted] = useState(false);
     const [open, setOpen] = useState(false);
     const [like, setLike] = useState(false);
@@ -56,7 +75,7 @@ const Post = ({ post, ...otherProps }: PostProps) => {
     const token = useSelector(selectUserToken);
     const dispatch = useDispatch<AppDispatch>();
 
-    const handleCommentSubmit = (e: FormEvent) => {
+    const handleCommentSubmit = (e: any) => {
         e.preventDefault();
         dispatch(
             createLocalComment({
@@ -82,7 +101,7 @@ const Post = ({ post, ...otherProps }: PostProps) => {
 
     useEffect(() => {
         if (post.interactions.length === 0) return;
-        post.interactions.find((interaction) => {
+        post.interactions.find(({interaction}: any) => {
             if (interaction.owner === userInfo._id) {
                 if (interaction.type === "like") {
                     setLike(true);
@@ -93,10 +112,10 @@ const Post = ({ post, ...otherProps }: PostProps) => {
                 }
             }
         });
-    }, [post.interactions, userInfo?._id]);
+    }, [post.interactions, userInfo._id]);
 
     return (
-        <Card {...otherProps} className={`${postDelete ? "hidden" : ""}`}>
+        <Card {...otherPorps} className={`${postDelete ? "hidden" : ""}`}>
             <CardHeader>
                 <div className="flex-between">
                     <div className="flex-start gap-4">
@@ -105,7 +124,9 @@ const Post = ({ post, ...otherProps }: PostProps) => {
                         </div>
                         <div>
                             <CardTitle>
-                                <span className="text-lg">{post.owner.name}</span>
+                                <span className="text-lg">
+                                    {post.owner.name}
+                                </span>
                             </CardTitle>
                             <p className="text-xs mt-[-1px]">Few moments ago</p>
                         </div>
@@ -138,26 +159,40 @@ const Post = ({ post, ...otherProps }: PostProps) => {
                                 {userInfo._id === post.owner._id && (
                                     <>
                                         <MenubarSeparator />
-                                        <Dialog open={open} onOpenChange={setOpen}>
-                                            <DialogTrigger>
-                                                <div className="flex-center gap-2 ml-2">
-                                                    <FiEdit className="text-sm" />
-                                                    <span className="text-sm">Edit</span>
-                                                </div>
-                                            </DialogTrigger>
-                                            <DialogContent className="w-fit max-w-[70vw]">
-                                                <DialogHeader>
-                                                    <DialogTitle>
-                                                        <span className="text-2xl">Create New Post</span>
-                                                    </DialogTitle>
-                                                    <DialogDescription>
-                                                        Fill in the following information to create a new post
-                                                    </DialogDescription>
-                                                </DialogHeader>
+                                        {/* <MenubarItem> */}
+                                            <Dialog
+                                                open={open}
+                                                onOpenChange={setOpen}
+                                            >
+                                                <DialogTrigger className="">
+                                                    <div className="flex-center gap-2 ml-2">
+                                                        <FiEdit className="text-sm" />
+                                                        <span className="text-sm">Edit</span>
+                                                    </div>
+                                                </DialogTrigger>
+                                                <DialogContent className="w-fit max-w-[70vw]">
+                                                    <DialogHeader>
+                                                        <DialogTitle>
+                                                            <span className="text-2xl">
+                                                                Create New Post
+                                                            </span>
+                                                        </DialogTitle>
+                                                        <DialogDescription>
+                                                            Fill in the
+                                                            following
+                                                            information to
+                                                            create a new post
+                                                        </DialogDescription>
+                                                    </DialogHeader>
 
-                                                <PostForm setOpen={setOpen} post={post} type="edit" />
-                                            </DialogContent>
-                                        </Dialog>
+                                                    <PostForm
+                                                    setOpen={setOpen}
+                                                    post={post}
+                                                    type="edit"
+                                                    />
+                                                </DialogContent>
+                                            </Dialog>
+                                        {/* </MenubarItem> */}
                                         <MenubarItem>
                                             <div
                                                 className="flex-center gap-2"
@@ -167,7 +202,7 @@ const Post = ({ post, ...otherProps }: PostProps) => {
                                                             postId: post._id,
                                                             jwtToken: token,
                                                         })
-                                                    );
+                                                    )
                                                     setPostDeleted(true);
                                                 }}
                                             >
@@ -184,7 +219,9 @@ const Post = ({ post, ...otherProps }: PostProps) => {
             </CardHeader>
             <CardContent>
                 <h1 className="text-xl font-semibold">{post.title}</h1>
-                <p>{post.content}</p>
+                <p>
+                    {post.content}
+                </p>
             </CardContent>
             <CardFooter>
                 <div className="flex-center w-fit gap-10">
@@ -197,7 +234,9 @@ const Post = ({ post, ...otherProps }: PostProps) => {
                                     setDislike(false);
                                     setDislikeCount(dislikeCount - 1);
                                 }
-                                setLikeCount(like ? likeCount - 1 : likeCount + 1);
+                                setLikeCount(
+                                    like ? likeCount - 1 : likeCount + 1
+                                );
                                 dispatch(
                                     createInteraction({
                                         postId: post._id,
@@ -222,7 +261,11 @@ const Post = ({ post, ...otherProps }: PostProps) => {
                                     setLikeCount(likeCount - 1);
                                     setLike(false);
                                 }
-                                setDislikeCount(dislike ? dislikeCount - 1 : dislikeCount + 1);
+                                setDislikeCount(
+                                    dislike
+                                        ? dislikeCount - 1
+                                        : dislikeCount + 1
+                                );
                                 dispatch(
                                     createInteraction({
                                         postId: post._id,
@@ -251,8 +294,11 @@ const Post = ({ post, ...otherProps }: PostProps) => {
             </CardFooter>
             {commentOpen && (
                 <div className="w-full p-4 pt-0">
-                    <form className="flex-center gap-4" onSubmit={handleCommentSubmit}>
-                        <Input
+                    <form
+                        className="flex-center gap-4"
+                        onSubmit={handleCommentSubmit}
+                    >
+                        <input
                             value={comment}
                             type="text"
                             placeholder="Comment"
@@ -265,30 +311,45 @@ const Post = ({ post, ...otherProps }: PostProps) => {
                         {post.comments.length > 0 ? (
                             <div className="flex-col-center pt-4 pb-2 gap-2">
                                 {post.comments.map((comment: Comment, index: number) => (
-                                    <div key={index} className="flex flex-col gap-1 w-[95%] shadow-sm px-4 py-2 rounded-lg border">
+                                    <div
+                                        key={index}
+                                        className="flex flex-col gap-1 w-[95%] shadow-sm px-4 py-2 rounded-lg border"
+                                    >
                                         <div className="flex-between">
                                             <div className="flex-center w-fit gap-2">
                                                 <div className="rounded-full overflow-hidden border shadow-sm p-1 w-fit">
                                                     <FiUser className="text-xl" />
                                                 </div>
                                                 <div className="flex flex-col gap-0">
-                                                    <span className="text-md font-semibold">{comment.owner.name}</span>
-                                                    <span className="text-[11px] mt-[-4px]">Few moments ago</span>
+                                                    <span className="text-md font-semibold">
+                                                        {comment.owner.name}
+                                                    </span>
+                                                    <span className="text-[11px] mt-[-4px]">
+                                                        Few moments ago
+                                                    </span>
                                                 </div>
                                             </div>
                                             <BsThreeDots className="text-lg" />
                                         </div>
                                         <div>
-                                            <p className="ml-4 leading-[14px] text-sm">{comment.content}</p>
+                                            <p className="ml-4  leading-[14px] text-sm">
+                                                {comment.content}
+                                            </p>
                                         </div>
                                     </div>
                                 ))}
                             </div>
                         ) : (
                             <div className="flex-col-center h-full w-full">
-                                <img src="/noComents.png" alt="" className="w-[150px]" />
-                                <p className="text-xl">There are no comments</p>
-                                <p className="text-xs">Be the first one to comment</p>
+                                <img
+                                    src="/noComents.png"
+                                    alt=""
+                                    className="w-[150px]"
+                                />
+                                <p className="text-xl">There are no comment</p>
+                                <p className="text-xs">
+                                    Be the first one to comment
+                                </p>
                             </div>
                         )}
                     </div>

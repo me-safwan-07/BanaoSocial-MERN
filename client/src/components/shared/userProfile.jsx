@@ -1,7 +1,7 @@
 import { FiUser } from "react-icons/fi";
 import { MdLogout } from "react-icons/md";
+import { logout } from "@/actions/authActions";
 import { useDispatch } from "react-redux";
-import { ThunkDispatch, AnyAction } from "@reduxjs/toolkit";
 import { useToast } from "@/hooks/use-toast";
 import { IoSettingsOutline } from "react-icons/io5";
 import { LuUserCog } from "react-icons/lu";
@@ -14,20 +14,15 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { logout } from "@/actions/authActions";
 
 const UserProfile = () => {
-    const dispatch = useDispatch<ThunkDispatch<any, any, AnyAction>>();
+    const dispatch = useDispatch();
     const { toast } = useToast();
     const navigate = useNavigate();
     return (
         <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-                <button>
-                    <div className="profile-trigger">
-                        <FiUser className="text-xl" />
-                    </div>
-                </button>
+            <DropdownMenuTrigger>
+                <FiUser className="text-xl" />
             </DropdownMenuTrigger>
             <DropdownMenuContent>
                 <DropdownMenuLabel>My Account</DropdownMenuLabel>
@@ -53,7 +48,7 @@ const UserProfile = () => {
                             dispatch(logout());
                             navigate('/auth/signin');
                             toast({
-                                message: "Success",
+                                title: "Success",
                                 description: "Logged out successfully",
                             });
                         }}
