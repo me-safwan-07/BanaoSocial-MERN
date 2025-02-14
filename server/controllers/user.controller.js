@@ -6,6 +6,7 @@ import bcrypt from "bcryptjs";
 export const signUp = async (req, res) => {
     try {
         const user = await User.findOne({ email: req.body.email });
+        console.log(user);
         if (user) {
             return res.status(400).json({ message: "User already exists!" });
         }
@@ -35,27 +36,35 @@ export const signUp = async (req, res) => {
 
 export const signIn = async (req, res) => {
     try {
-        const user = await User.findOne({ email: req.body.email });
-        if (user) {
-            if (user.password === req.body.password) {
-                return res.status(200).json({
-                    success: true,
-                    message: "User signed in successfully",
-                    data: {
-                        user,
-                        token: jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: "7d" }),
-                    }
-                });
-            }
-            return res.status(400).json({message: "Invalid credentials"});
-        } else {
-            return res.status(400).json({ message: "User not found" });
+        const { email, password } = req.body;
+
+        // Check if user exists
+        const user = await User.findOne({ email });
+        if (!user) {
+            return res.status(400).json({ success: false, message: "User not found" });
         }
+
+        // Compare hashed password
+        const isPasswordValid = await bcrypt.compare(password, user.password);
+        if (!isPasswordValid) {
+            return res.status(400).json({ success: false, message: "Invalid credentials" });
+        }
+
+        // Generate JWT token
+        const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: "7d" });
+
+        // Respond with user data and token
+        return res.status(200).json({
+            success: true,
+            message: "User signed in successfully",
+            data: { user, token },
+        });
     } catch (error) {
-        console.log(error);
-        res.status(500).send(error.message);
+        console.error("Sign-in Error:", error);
+        return res.status(500).json({ success: false, message: "Internal Server Error" });
     }
 };
+
 
 export const forgotPassword = async (req, res) => {
     try {
@@ -63,7 +72,6 @@ export const forgotPassword = async (req, res) => {
         if (!user) {
             return res.status(400).json({ message: "User not found!" });
         } else {
-            console.log("hello");
             const token = jwt.sign({ email: user.email }, process.env.JWT_SECRET, { expiresIn: "10m" });
             await ForgotUser.deleteMany({ email: user.email });
             await ForgotUser.create({ email: user.email, token });
@@ -97,10 +105,7 @@ export const verify = async (req, res) => {
                 return res.status(400).json({ message: "Invalid token" });
             } else {
                 forgotUser.varified = true;
-                res.status(200).json({
-                    success: true,
-                    message: "Token verified successfully"
-                })
+                res.redirect("http://localhost:5173/auth/reset-password");
             }
         });
     } catch {

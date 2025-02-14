@@ -12,6 +12,7 @@ export const createPost = async (req, res) => {
         user.posts.push(post._id);
         await user.save();
         await post.save();
+        console.log(post)
         res.status(201).json({
             success: true,
             message: "Post created successfully",
