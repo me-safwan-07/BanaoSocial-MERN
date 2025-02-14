@@ -1,13 +1,12 @@
-import React, { useRef, useState } from 'react'
+import { useRef, useState } from 'react'
 import { Controller, FormProvider, useForm } from 'react-hook-form'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
-// import { login } from '@/hooks/authHooks';
 import { PasswordInput } from '@/components/ui/PasswordInput';
-// import { GoogleButton } from '@/components/ui/SignupOptions/components/GoogleButton';
 import Button from '@/components/ui/Button';
-// import { cn } from '@/lib/utils';
-import { GoogleOAuthProvider } from '@react-oauth/google';
-import { GoogleButton } from '@/components/GoogleButton';
+import { signIn } from '@/redux/user/user.slice';
+import { AppDispatch } from '@/redux/store';
+import { useDispatch } from 'react-redux';
+import { toast } from '@/hooks/use-toast';
 
 interface TSignInFormState {
   email: string;
@@ -19,26 +18,35 @@ export const SigninForm = () => {
   const [searchParams] = useSearchParams();
   const emailRef = useRef<HTMLInputElement>(null);
   const formMethods = useForm<TSignInFormState>();
+  const dispatch = useDispatch<AppDispatch>();
+  const [loggingIn, setLoggingIn] = useState(false);
 
   const fromLabel = 'Login to your account';
 
   const onSubmit = async(data: TSignInFormState) => {
     setLoggingIn(true);
-
-    // try {
-    //   const token = await login(data);
-    //   if (token) {
-    //     localStorage.setItem("token", token);
-    //     navigate("/");
-    //   }
-    // } catch (error) {
-    //   console.error(error);
-    // } finally {
-    //   setLoggingIn(false);
-    // }
+    // e.preventDefault();
+    // console.log(formData);
+    dispatch(signIn(data))
+        .unwrap()
+        .then(() => {
+            toast({
+                message: "Success 🎉",
+                description: "Singed in successfully",
+            });
+            navigate("/");
+        })
+        .catch((error) => {
+            toast({
+                variant: "destructive",
+                message: "Error ⚠️",
+                description: error.message,
+            });
+            setLoggingIn(false);
+            console.log(error);
+        });
   }
 
-  const [loggingIn, setLoggingIn] = useState(false);
   const [showLogin, setShowLogin] = useState(false);
   const [isPasswordFocused, setIsPasswordFocused] = useState(false);
   // const [totpLogin, setTotpLogin] = useState(false);
@@ -120,10 +128,6 @@ export const SigninForm = () => {
                   Login with Email
               </Button>
             </form>
-            {/* <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}> */}
-              <GoogleButton />
-            {/* </GoogleOAuthProvider> */}
-        
             <div className='mt-9 text-center text-xs'>
               <span className='leading-5 text-slate-500'>New to PlayForm?</span>
               <br />

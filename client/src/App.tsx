@@ -1,15 +1,17 @@
 import { Route, Routes } from "react-router-dom"
+import { useSelector } from "react-redux";
 import Home from "./pages/Home"
 import AuthPage from "./pages/authPage"
+import { selectUserToken } from "./redux/user/user.selector";
 
 
 const App = () => {
-  return (
+  const token = useSelector(selectUserToken);
+return (
     <>
       <Routes>
-        <Route path="/" element={<Home />} />
+        <Route path="/" element={!token? <Home /> :<div>No post found</div>} />
         <Route path="/auth/*" element={<AuthPage />} />
-        {/* Add more routes as needed */}
       </Routes>
     </>
   )

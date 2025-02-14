@@ -44,7 +44,7 @@ const Home = () => {
               <p className="text-xl md:text-2xl text-muted-foreground">
                 A place to read, write, and deepen your understanding
               </p>
-              <Button size="lg" className="text-lg px-8">
+              <Button size="lg" className="text-lg px-8" variant='darkCTA'>
                 Start reading
               </Button>
             </div>
